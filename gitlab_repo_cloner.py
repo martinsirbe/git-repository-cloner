@@ -3,32 +3,38 @@ import json
 import subprocess
 import sys
 
-GREEN_COLOR = '\033[92m'
-END_COLOR = '\033[0m'
+gitlab_url = "https://gitlab.com/api/v3/groups/{}/projects?private_token={}&per_page=100&page={}"
+git_clone_cmd = "git clone {}"
+
+current_page_message = "\033[92mCurrent page: {}\033[0m"
+cloned_repositories_message = "\033[92mCloned {} repositories.\033[0m"
 
 group = sys.argv[1]
 access_token = sys.argv[2]
 page = 1
-totalClonedRepos = 0
+cloned_repository_count = 0
 
-def createUrl():
-	return "https://gitlab.com/api/v3/groups/" + group + "/projects?private_token=" + access_token + "&per_page=100&page=" + str(page)
 
-def cloneRepo(ssh_url_to_repo):
-	bashCommand = "git clone " + ssh_url_to_repo
-	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-	output = process.communicate()[0]
+def create_url():
+    return gitlab_url.format(group, access_token, str(page))
 
-response = urllib.request.urlopen(createUrl()).read()
-repos = json.loads(response.decode('utf-8'))
 
-while(len(repos) != 0):
-	print(GREEN_COLOR + "Current page: " + str(page) + END_COLOR)
-	for repo in repos:
-		totalClonedRepos = totalClonedRepos + 1
-		cloneRepo(repo['ssh_url_to_repo'])
-	page = page + 1
-	nextResponse = urllib.request.urlopen(createUrl()).read()
-	repos = json.loads(nextResponse.decode('utf-8'))
+def clone_repo(ssh_url_to_repo):
+    bash_cmd = git_clone_cmd.format(ssh_url_to_repo)
+    process = subprocess.Popen(bash_cmd.split(), stdout=subprocess.PIPE)
+    print(process.communicate()[0])
 
-print(GREEN_COLOR + "Cloned: " + str(totalClonedRepos) + " repos" + END_COLOR)
+
+response = urllib.request.urlopen(create_url()).read()
+repositories = json.loads(response.decode('utf-8'))
+
+while len(repositories) != 0:
+    print(current_page_message.format(str(page)))
+    for repository in repositories:
+        cloned_repository_count += 1
+        clone_repo(repository['ssh_url_to_repo'])
+    page += 1
+    nextResponse = urllib.request.urlopen(create_url()).read()
+    repositories = json.loads(nextResponse.decode('utf-8'))
+
+print(cloned_repositories_message.format(str(cloned_repository_count)))
