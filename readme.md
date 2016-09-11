@@ -10,10 +10,12 @@
                                                               \___/_/\____/_/ /_/\___/_/
 
 ```
-These scripts has been written to make life much more easier when necessary to clone multiple git repositories at once.
-Currently here you can find scripts for GitHub and GitLab.
+A script used for repository cloning from GitHub and GitLab code hosting sites.
 
 ### How to run the scripts?
-GitHub) `python3 github_repo_cloner.py <organisation_name>`
+GitHub) `./repository_cloner.py <code_hosting_site> <organisation/group>`
+Example of cloning all the Google repositories - `./repository_cloner.py github google`
 
-GitLab) `python3 gitlab_repo_cloner.py <group_name> <private_access_token>`
+GitLab) `./github_repo_cloner.py <code_hosting_site> <organisation/group> -a <private_access_token>`
+
+For more info: `./repository_cloner.py --help`
