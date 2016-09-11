@@ -5,7 +5,7 @@ import json
 import subprocess
 import argparse
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="A script used for repository cloning from GitHub and GitLab code hosting sites.")
 parser.add_argument("site", help="code hosting site")
 parser.add_argument("organisation", help="organisation for which to retrieve all repositories")
 parser.add_argument("-a", "--access-token", help="access token for accessing private repositories")
