@@ -12,10 +12,12 @@
 ```
 A script used for repository cloning from GitHub and GitLab code hosting sites.
 
-### How to run the scripts?
-GitHub) `./repository_cloner.py <code_hosting_site> <organisation/group>`
+### How to run the script?
+**GitHub)** `./repository_cloner.py github <group>`
+
 Example of cloning all the Google repositories - `./repository_cloner.py github google`
 
-GitLab) `./github_repo_cloner.py <code_hosting_site> <organisation/group> -a <private_access_token>`
+**GitLab)** `./repository_cloner.py gitlab <organisation> -a <private_access_token>`
 
-For more info: `./repository_cloner.py --help`
+
+Help page: `./repository_cloner.py --help`
