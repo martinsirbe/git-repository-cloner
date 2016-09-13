@@ -7,7 +7,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description="A script used for repository cloning from GitHub and GitLab code hosting sites.")
 parser.add_argument("site", help="code hosting site")
-parser.add_argument("organisation/group", help="organisation or group from which to retrieve all repositories")
+parser.add_argument("organisation", help="organisation or group from which to retrieve all repositories")
 parser.add_argument("-a", "--access-token", help="access token for accessing private repositories")
 args = parser.parse_args()
 
