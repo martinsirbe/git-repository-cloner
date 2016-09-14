@@ -10,7 +10,7 @@
                                                               \___/_/\____/_/ /_/\___/_/
 
 ```
-A script used for repository cloning from GitHub and GitLab code hosting sites.
+A script used for repository cloning from GitHub, GitLab and BitBucket code hosting sites.
 
 ### How to run the script?
 **GitHub)** `./repository_cloner.py github <group>`
@@ -19,5 +19,6 @@ Example of cloning all the Google repositories - `./repository_cloner.py github 
 
 **GitLab)** `./repository_cloner.py gitlab <organisation> -a <private_access_token>`
 
+**BitBucket)** `./repository_cloner.py bitbucket <organisation>`
 
 Help page: `./repository_cloner.py --help`

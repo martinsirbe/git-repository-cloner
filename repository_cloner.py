@@ -5,7 +5,7 @@ import json
 import subprocess
 import argparse
 
-parser = argparse.ArgumentParser(description="A script used for repository cloning from GitHub and GitLab code hosting sites.")
+parser = argparse.ArgumentParser(description="A script used for repository cloning from GitHub, GitLab and BitBucket code hosting sites.")
 parser.add_argument("site", help="code hosting site")
 parser.add_argument("organisation", help="organisation or group from which to retrieve all repositories")
 parser.add_argument("-a", "--access-token", help="access token for accessing private repositories")
@@ -21,6 +21,7 @@ missing_access_token_error = "\033[1m\033[93mIn order to get GitLab repositories
 
 github_url = "https://api.github.com/orgs/{}/repos?per_page=100&page={}"
 gitlab_url = "https://gitlab.com/api/v3/groups/{}/projects?per_page=100&page={}"
+bitbucket_url = "https://bitbucket.org/api/2.0/repositories/{}?page={}"
 git_clone_cmd = "git clone {}"
 
 page = 1
@@ -33,8 +34,14 @@ def create_url():
         return get_github_url()
     elif args.site.lower() == "gitlab":
         return get_gitlab_url()
+    elif args.site.lower() == "bitbucket":
+        return get_bitbucket_url()
     else:
         raise AttributeError(wrong_git_site_error.format(help_command_message))
+
+
+def make_request():
+    return urllib.request.urlopen(create_url()).read()
 
 
 def get_gitlab_url():
@@ -51,6 +58,17 @@ def get_github_url():
         return github_url.format(args.organisation, str(page))
 
 
+def get_bitbucket_url():
+        return bitbucket_url.format(args.organisation, str(page))
+
+
+def get_repositories(response):
+    if args.site.lower() == "bitbucket":
+        return json.loads(response.decode('utf-8'))['values']
+    else:
+        return json.loads(response.decode('utf-8'))
+
+
 # Clones Git repository by executing git clone bash command.
 def clone_repo(repository_to_clone):
     bash_cmd = git_clone_cmd.format(repository_to_clone)
@@ -58,11 +76,11 @@ def clone_repo(repository_to_clone):
     print(process.communicate()[0])
 
 # Making the first request for repositories.
-response = urllib.request.urlopen(create_url()).read()
-repositories = json.loads(response.decode('utf-8'))
+repositories = get_repositories(make_request())
 
 # While there are more repositories in the next page, continue cloning the repositories.
 while len(repositories) != 0:
+    print("Repositories on current page: " + str(len(repositories)))
     print(current_page_message.format(str(page)))
     for repository in repositories:
         cloned_repository_count += 1
@@ -70,8 +88,9 @@ while len(repositories) != 0:
             clone_repo(repository['git_url'])
         elif args.site.lower() == "gitlab":
             clone_repo(repository['ssh_url_to_repo'])
+        elif args.site.lower() == "bitbucket":
+            clone_repo(repository['links']['clone'][0]['href'])
     page += 1
-    nextResponse = urllib.request.urlopen(create_url()).read()
-    repositories = json.loads(nextResponse.decode('utf-8'))
+    repositories = get_repositories(make_request())
 
 print(cloned_repositories_message.format(str(cloned_repository_count)))
