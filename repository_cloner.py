@@ -80,7 +80,6 @@ repositories = get_repositories(make_request())
 
 # While there are more repositories in the next page, continue cloning the repositories.
 while len(repositories) != 0:
-    print("Repositories on current page: " + str(len(repositories)))
     print(current_page_message.format(str(page)))
     for repository in repositories:
         cloned_repository_count += 1
