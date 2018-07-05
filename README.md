@@ -22,3 +22,6 @@ Example of cloning all the Google repositories - `./repository_cloner.py github 
 **BitBucket)** `./repository_cloner.py bitbucket <organisation>`
 
 Help page: `./repository_cloner.py --help`
+
+## License
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
